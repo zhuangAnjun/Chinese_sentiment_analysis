@@ -20,14 +20,15 @@ sampling函数，对训练数据不采样或者过采样。默认进行采样
 # data_process文件包含两个函数 <br>
 
 ## process_data(input_file, out_file) <br>
-### 将训练数据集和测试数据集评论部分提取出来，将句子编码转换utf-8，分割成单独的字后存储到文件里 <br>
+### 功能：<br>
+将训练数据集和测试数据集评论部分提取出来，将句子编码转换utf-8，分割成单独的字后存储到文件里 <br>
 ### 调用： <br>
 process_data(input_file, out_file)<br>
 ### 注意：<br>
 这个函数只针对特定数据集的数据整理，并不通用 <br>
 
 ## process_corpus(input_file, out_file) <br>
-### 功能 <br>
+### 功能： <br>
  清洗搜狗语料，同时将整段话以'。'和'；'为标志划分成单独的句子，再将句子划分成单独的字 <br>
 ### 调用 <br>
 process_corpus(input_file, out_file)<br>
