@@ -5,7 +5,6 @@ from keras import initializers, regularizers, constraints, optimizers, layers, c
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.optimizers import Adam, SGD
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
 from pre_process import *
 from model import sentiment_analysis
 from f1_score import f1
@@ -63,6 +62,8 @@ model.fit(np.array(X_tra), np.array(y_tra), batch_size=batch_size, epochs=epochs
            validation_data=(np.array(X_val), np.array(y_val)), callbacks=callbacks_list, verbose=1)
 print('complete')
 
+# 载入最佳权重
+model.load_weights('./model/weights_base_best.hdf5')
 print('Predicting....')
 y_pred = model.predict(x_test, batch_size=1024, verbose=1)
 

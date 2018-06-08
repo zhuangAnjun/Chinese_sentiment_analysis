@@ -16,7 +16,7 @@ nlp数据预处理，包括生成词典，padding，生成embedding矩阵等<br>
 训练模型，其中包含有预定义的各种参数，包括文件路径等.训练好后对训练数据进行预测并写入文件<br>
 ## sampling.py 
 sampling函数，对训练数据不采样或者过采样。默认进行采样
-
+<br>
 # data_process文件包含两个函数 <br>
 
 ## process_data(input_file, out_file) <br>
