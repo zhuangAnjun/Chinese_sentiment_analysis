@@ -52,14 +52,14 @@ callbacks_list = [checkpoint, early]
 
 #5次训练预测取平均值
 y_preds = np.zeros((x_test.shape[0],3))
-for i in range(5):
-    print('The %d times',i)
+for i in range(2):
+    print('The %d times'%(i+1))
     model = sentiment_analysis(embedding_matrix_400v)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
     model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=3, validation_data=(np.array(X_val), np.array(y_val)),callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
 
     y_preds += model.predict(x_test, batch_size=128, verbose=1)
-y_preds = y_preds/5.0
+y_preds = y_preds/2.0
 
 #半监督过程，weight表示样本权值
 preds = y_preds
