@@ -1,9 +1,9 @@
 import numpy as np
 from random import randint
 from keras.utils import to_categorical
-
+import numpy as np
 # 对数据进行欠采样和过采样，使数据平衡。 注意输入为原始读取文件获得的数据
-def sampling(train_x, train_y, numOfdatas=25000, isSampling=True):
+def sampling(train_x, train_y, numOfdatas=25000, isSampling=False):
     # 进行采样
     if isSampling:
         X_train = []
@@ -32,3 +32,16 @@ def sampling(train_x, train_y, numOfdatas=25000, isSampling=True):
 
 
     
+#从test数据集中根据阈值进行采样，返回x,y,weight。weight默认得分除以10
+def sampling_from_pred(test_data, preds, weight=10.0, threshold=[0.998, 0.98, 0.9999]):
+    X = []
+    y = []
+    W = []
+    for n in range(len(preds)):
+        index = np.argmax(preds[n])
+        if preds[n][index]>=threshold[index]:
+            X.append(test_data[n])
+            y.append(index)
+            W.append(preds[n][index]/weight)
+    print(len(y))
+    return np.concatenate((np.array(X), np.array(y).reshape(-1,1), np.array(W).reshape(-1,1)), axis=1)
