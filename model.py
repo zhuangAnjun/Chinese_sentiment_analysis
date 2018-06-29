@@ -14,7 +14,7 @@ def sentiment_analysis(embedding_matrix,maxlen=64, embed_size=400, max_features=
     sequence_input = Input(shape=(maxlen,))
     x = Embedding(max_features, embed_size, weights=[embedding_matrix],trainable = True)(sequence_input)
 
-    x = Bidirectional(LSTM(128, return_sequences=True))(x)
+    x = Bidirectional(CuDNNLSTM(128, return_sequences=True))(x)
     x = Activation('relu')(x)
     x = Conv1D(128, kernel_size = 1, padding = "valid", activation='relu', kernel_initializer = "glorot_uniform")(x)
     x = Conv1D(64, kernel_size=1, activation='relu', padding = "valid", kernel_initializer = "glorot_uniform")(x)
