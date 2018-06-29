@@ -38,7 +38,7 @@ embedding_matrix_400v = get_embedding_matrix(
 # 以0.8的比例划分训练集和验证集,并将label转化成one-hot
 W = np.ones((len(X_train),1))
 train_data = np.concatenate((np.array(x_train), y_train, W), axis=1)
-train, val = train_test_split(train_data, test_size=0.9, random_state=666)
+train, val = train_test_split(train_data, test_size=0.2, random_state=666)
 X_tra, y_tra, weights = train[:,0:maxlen], train[:,maxlen:maxlen+1], train[:,maxlen+1:maxlen+2].reshape((-1))
 X_val, y_val = val[:,0:maxlen], val[:,maxlen:maxlen+1]
 y_tra = to_categorical(y_tra, num_classes=3)

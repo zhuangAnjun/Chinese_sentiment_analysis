@@ -17,7 +17,7 @@ def sampling(train_x, train_y, numOfdatas=25000, isSampling=False):
                 X_train.append(train_x[0][index])
                 y_train.append(train_y[0][index])
 
-        y_train = to_categorical(y_train, num_classes=3)
+        #y_train = to_categorical(y_train, num_classes=3)
 
         return X_train, y_train
         
@@ -25,8 +25,8 @@ def sampling(train_x, train_y, numOfdatas=25000, isSampling=False):
     else:
         X_train = np.array(train_x[0:82000][0])
         X_train = X_train.tolist()
-        y_train = to_categorical(train_y, num_classes=3)
-        y_train = np.array(y_train[0:82000][:])
+        #y_train = to_categorical(train_y, num_classes=3)
+        y_train = np.array(train_y[0:82000][:])
         y_train = y_train.tolist()
     return X_train, y_train
 
