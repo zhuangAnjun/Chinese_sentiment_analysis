@@ -12,8 +12,8 @@ def tok_and_padding( X_train, X_test, max_features=4000, maxlen=64):
     tok.fit_on_texts(X_train + X_test)
     X_train = tok.texts_to_sequences(X_train)
     X_test = tok.texts_to_sequences(X_test)
-    x_train = sequence.pad_sequences(X_train, maxlen=maxlen, padding='post')
-    x_test = sequence.pad_sequences(X_test, maxlen=maxlen, padding='post')
+    x_train = sequence.pad_sequences(X_train, maxlen=maxlen, padding='pre')
+    x_test = sequence.pad_sequences(X_test, maxlen=maxlen, padding='pre')
     return [tok, x_train, x_test]
 
 # 计算词在词典中的位置
