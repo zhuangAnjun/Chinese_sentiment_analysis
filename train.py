@@ -65,7 +65,7 @@ y_preds = y_preds/10.0
 #半监督过程，weight表示样本权值
 preds = y_preds
 for i in range(9):
-    test_data = sampling_from_pred(x_test, preds, weight=20.0-i, threshold=[0.998+i/10000, 0.8+i/5, 0.999995+i/10000000])
+    test_data = sampling_from_pred(x_test, preds/(i+1), weight=20.0-i, threshold=[0.998+i/10000, 0.8+i/5, 0.999995+i/10000000])
     print(test_data.shape[0])
     #将采样出来的测试数据与训练数据拼接
     Train_data = np.concatenate((train_data, test_data), axis=0)
@@ -85,7 +85,6 @@ for i in range(9):
     model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=3, validation_data=(np.array(X_val), np.array(y_val)), callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
     #将预测值叠加，然后取平均，能避免某次出现很坏的情况
     preds += model.predict(x_test, batch_size=128, verbose=1)
-    preds = preds/2.0
 
 # 输出预测值的情况
 y_pred = np.argmax(y_preds, axis=1)
