@@ -41,6 +41,7 @@ train_data = np.concatenate((np.array(x_train), y_train, W), axis=1)
 train, val = train_test_split(train_data, test_size=0.2, random_state=666)
 X_tra, y_tra, weights = train[:,0:maxlen], train[:,maxlen:maxlen+1], train[:,maxlen+1:maxlen+2].reshape((-1))
 X_val, y_val = val[:,0:maxlen], val[:,maxlen:maxlen+1]
+# 将label转化为one-hot
 y_tra = to_categorical(y_tra, num_classes=3)
 y_val = to_categorical(y_val, num_classes=3)
 
@@ -52,14 +53,14 @@ callbacks_list = [checkpoint, early]
 
 #5次训练预测取平均值
 y_preds = np.zeros((x_test.shape[0],3))
-for i in range(2):
+for i in range(10):
     print('The %d times'%(i+1))
     model = sentiment_analysis(embedding_matrix_400v)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
     model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=3, validation_data=(np.array(X_val), np.array(y_val)),callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
 
     y_preds += model.predict(x_test, batch_size=128, verbose=1)
-y_preds = y_preds/2.0
+y_preds = y_preds/10.0
 
 #半监督过程，weight表示样本权值
 preds = y_preds
