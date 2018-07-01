@@ -22,11 +22,11 @@ def sentiment_analysis(embedding_matrix,maxlen=64, embed_size=400, max_features=
 
     x1 = Transpose()(x)
     x1 = Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x1)
-    x1 = Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x1)
+    x1 = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x1)
     x1 = Flatten()(x1)
     
     x2 = Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x)
-    x2 = Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x2)
+    x2 = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x2)
     x2 = Flatten()(x2)
     
     x = Concatenate(axis=-1)([x1,x2])
