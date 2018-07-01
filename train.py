@@ -38,7 +38,7 @@ embedding_matrix_400v = get_embedding_matrix(
 # 以0.8的比例划分训练集和验证集,并将label转化成one-hot
 W = np.ones((len(X_train),1))
 train_data = np.concatenate((np.array(x_train), y_train, W), axis=1)
-train, val = train_test_split(train_data, test_size=0.2, random_state=666)
+train, val = train_test_split(train_data, test_size=0.3, random_state=666)
 X_tra, y_tra, weights = train[:,0:maxlen], train[:,maxlen:maxlen+1], train[:,maxlen+1:maxlen+2].reshape((-1))
 X_val, y_val = val[:,0:maxlen], val[:,maxlen:maxlen+1]
 # 将label转化为one-hot
@@ -57,9 +57,9 @@ for i in range(10):
     print('The %d times'%(i+1))
     model = sentiment_analysis(embedding_matrix_400v)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
-    model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=3, validation_data=(np.array(X_val), np.array(y_val)),callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
+    model.fit(np.array(X_tra), np.array(y_tra), batch_size=256, epochs=5, validation_data=(np.array(X_val), np.array(y_val)),callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
 
-    y_preds += model.predict(x_test, batch_size=128, verbose=1)
+    y_preds += model.predict(x_test, batch_size=1024, verbose=1)
 y_preds = y_preds/10.0
 
 #半监督过程，weight表示样本权值
@@ -82,15 +82,16 @@ for i in range(9):
     model = sentiment_analysis(embedding_matrix_400v)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
     #在fit的时候同时对类别和样本加权
-    model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=3, validation_data=(np.array(X_val), np.array(y_val)), callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
+    model.fit(np.array(X_tra), np.array(y_tra), batch_size=256, epochs=5, validation_data=(np.array(X_val), np.array(y_val)), callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
     #将预测值叠加，然后取平均，能避免某次出现很坏的情况
-    preds += model.predict(x_test, batch_size=128, verbose=1)
+    preds += model.predict(x_test, batch_size=1024, verbose=1)
+preds = preds/9.0
 
 # 输出预测值的情况
-y_pred = np.argmax(y_preds, axis=1)
+y_pred = np.argmax(preds, axis=1)
 print(y_pred.shape)
 num = [0, 0, 0]
-for i in range(y_pred.shape):
+for i in range(y_pred.shape[0]):
     num[y_pred[i]] += 1
 print(num)
 

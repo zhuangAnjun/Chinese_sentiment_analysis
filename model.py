@@ -14,15 +14,22 @@ def sentiment_analysis(embedding_matrix,maxlen=64, embed_size=400, max_features=
     sequence_input = Input(shape=(maxlen,))
     x = Embedding(max_features, embed_size, weights=[embedding_matrix],trainable = True)(sequence_input)
 
-    x = Bidirectional(CuDNNLSTM(128, return_sequences=True))(x)
+    x = Bidirectional(CuDNNLSTM(200, return_sequences=True))(x)
     x = Activation('relu')(x)
     x = Conv1D(128, kernel_size = 1, padding = "valid", activation='relu', kernel_initializer = "glorot_uniform")(x)
     x = Conv1D(64, kernel_size=1, activation='relu', padding = "valid", kernel_initializer = "glorot_uniform")(x)
     x = Conv1D(128, kernel_size=3, activation='relu', padding = "valid", kernel_initializer = "glorot_uniform")(x)
-    x = Transpose()(x)
-    x = Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x)
-    x = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x)
-    x = Flatten()(x)
+    
+    x1 = Transpose()(x)
+    x1 = Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x1)
+    x1 = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x1)
+    x1 = Flatten()(x1)
+    
+    x2 = Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x)
+    x2 = Dense(16, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x2)
+    x2 = Flatten()(x2)
+    
+    x = Concatenate(axis=-1)([x1,x2])
     x = Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01))(x)
     preds = Dense(3, activation='softmax')(x)
 
