@@ -12,7 +12,7 @@ from sampling import *
 from keras.utils import to_categorical
 
 # 预训练好的词向量文件
-EMBEDDING_FILE = './model/word2vec_org_400v_cut'
+EMBEDDING_FILE = './model/word2vec_org_500v_cut'
 
 # 读取训练集和测试集文件，记得要先预处理
 train_x = pd.read_csv('./datasets/train_data_cut.txt',  header=None, dtype='str', delimiter='\n')
@@ -32,8 +32,8 @@ epochs = 3
 # tok为词典，返回的数据是经过padding和截取的
 tok, x_train, x_test = tok_and_padding( X_train, X_test, max_features)
 
-embedding_matrix_400v = get_embedding_matrix(
-    tok, EMBEDDING_FILE, 400, max_features)
+embedding_matrix_500v = get_embedding_matrix(
+    tok, EMBEDDING_FILE, 500, max_features)
 
 # 以0.8的比例划分训练集和验证集,并将label转化成one-hot
 W = np.ones((len(X_train),1))
@@ -55,7 +55,7 @@ callbacks_list = [checkpoint, early]
 y_preds = np.zeros((x_test.shape[0],3))
 for i in range(10):
     print('The %d times'%(i+1))
-    model = sentiment_analysis(embedding_matrix_400v)
+    model = sentiment_analysis(embedding_matrix_500v, embed_size=500)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
     model.fit(np.array(X_tra), np.array(y_tra), batch_size=256, epochs=5, validation_data=(np.array(X_val), np.array(y_val)),callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
 
@@ -79,7 +79,7 @@ for i in range(9):
     #将y转化成one-hot编码
     y_tra = to_categorical(y_tra, num_classes=3)
     #重新建图
-    model = sentiment_analysis(embedding_matrix_400v)
+    model = sentiment_analysis(embedding_matrix_500v, embed_size=500)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
     #在fit的时候同时对类别和样本加权
     model.fit(np.array(X_tra), np.array(y_tra), batch_size=256, epochs=5, validation_data=(np.array(X_val), np.array(y_val)), callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
