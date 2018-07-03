@@ -53,19 +53,20 @@ callbacks_list = [checkpoint, early]
 
 #5次训练预测取平均值
 y_preds = np.zeros((x_test.shape[0],3))
-for i in range(10):
+for i in range(5):
     print('The %d times'%(i+1))
     model = sentiment_analysis(embedding_matrix_500v, embed_size=500)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
-    model.fit(np.array(X_tra), np.array(y_tra), batch_size=256, epochs=5, callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
+    # model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=2, validation_data=(np.array(X_val), np.array(y_val)),callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
+    model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=2, callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
 
     y_preds += model.predict(x_test, batch_size=1024, verbose=1)
-y_preds = y_preds/10.0
+y_preds = y_preds/5.0
 
 #半监督过程，weight表示样本权值
 preds = y_preds
-for i in range(9):
-    test_data = sampling_from_pred(x_test, preds/(i+1), weight=20.0-i, threshold=[0.998+i/10000, 0.8+i/5, 0.999995+i/10000000])
+for i in range(8):
+    test_data = sampling_from_pred(x_test, preds/(i+1), weight=15.0-i, threshold=[0.998+i/10000, 0.8+i/50, 0.999995+i/10000000])
     print(test_data.shape[0])
     #将采样出来的测试数据与训练数据拼接
     Train_data = np.concatenate((train_data, test_data), axis=0)
@@ -82,11 +83,12 @@ for i in range(9):
     model = sentiment_analysis(embedding_matrix_500v, embed_size=500)
     model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=[f1])
     #在fit的时候同时对类别和样本加权
-    model.fit(np.array(X_tra), np.array(y_tra), batch_size=256, epochs=5, callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
+    # model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=2, validation_data=(np.array(X_val), np.array(y_val)), callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
+    model.fit(np.array(X_tra), np.array(y_tra), batch_size=64, epochs=2, callbacks = callbacks_list, class_weight = [0.995, 1.1, 0.99],sample_weight=np.array(weights), verbose=1)
 
     #将预测值叠加，然后取平均，能避免某次出现很坏的情况
     preds += model.predict(x_test, batch_size=1024, verbose=1)
-preds = preds/9.0
+preds = preds/8.0
 
 # 输出预测值的情况
 y_pred = np.argmax(preds, axis=1)
